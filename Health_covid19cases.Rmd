@@ -44,7 +44,7 @@ cases_sel <- cases %>%
   mutate(
       variable_long = case_when(
       variable_short == "sarscov2_faelle" ~  "Gemeldete Anzahl von bestätigten SARS-CoV-2 Fällen",
-      variable_short == "sarscov2_verstorbene" ~  "Gemeldete Anzahl von bestätigten SARS-CoV-2 Versroebenen ",
+      variable_short == "sarscov2_verstorbene" ~  "Gemeldete Anzahl von bestätigten SARS-CoV-2 Verstorbene ",
       TRUE ~ "???"),
     topic = "Gesundheit",
     location = "ZH",
