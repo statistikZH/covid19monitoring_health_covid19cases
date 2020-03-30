@@ -63,7 +63,7 @@ cases_sel <- cases %>%
 
 ```{r}
 
-write.table(cases_sel, "./Gesundheit_covid19cases.csv", sep=",", fileEncoding="UTF-8", row.names = F)
+write.table(cases_sel, "./Health_covid19cases.csv", sep=",", fileEncoding="UTF-8", row.names = F)
 
 
 ```
