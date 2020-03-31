@@ -26,7 +26,7 @@ conf<-apply(conf,2, diff)
 #long format
 conf<-melt(as.matrix(conf))
 # variables
-conf$variable_short<-"confirmed_cases"
+conf$variable_short<-"confirmed_cases_sars_cov2"
 conf$variable_long<-"Gemeldete Anzahl SARS-CoV-2 Fälle"
 
 
@@ -41,7 +41,7 @@ dead<-na.locf(as.xts(dead))
 dead<-apply(dead,2, diff)
 #long format
 dead<-melt(as.matrix(dead))
-dead$variable_short<-"deceased_cases"
+dead$variable_short<-"deceased_cases_sars_cov2"
 dead$variable_long<-"Gemeldete Anzahl SARS-CoV-2 Verstorbene"
 
 all<-rbind(conf, dead)
