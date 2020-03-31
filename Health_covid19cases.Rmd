@@ -1,14 +1,15 @@
 ---
-title: "R Notebook"
+title: "covid19_Grossregion"
 ---
 
-# R setup
+# r setup
 
 ```{r}
 
 # Import libraries
 library(dplyr) # Version: ‘0.8.5’
 library(tidyr) # ‘1.0.2’
+library(lubridate) # ‘1.7.4’
 
 # Number formatting
 options(scipen = 1000000)
@@ -21,55 +22,46 @@ options(digits = 6)
 ```{r}
 
 #cases
-url_cases  <- "https://raw.githubusercontent.com/openZH/covid_19/master/fallzahlen_kanton_total_csv/COVID19_Fallzahlen_Kanton_ZH_total.csv"
+url_cases  <- "https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total.csv"
 cases <- read.csv(url(url_cases), header=T, sep=",", stringsAsFactors=FALSE, encoding="UTF-8")
 
-```
-
-```{r}
-
+#grossregion
+grossregion <- read.csv("KantonGrossregion.csv", header=T, sep=",", stringsAsFactors=FALSE, encoding="UTF-8")
 cases_sel <- cases %>%
-  select(date, ncumul_conf, ncumul_deceased) %>%
+  select(date, ncumul_conf, ncumul_deceased, abbreviation_canton_and_fl) %>%
+  left_join(grossregion, by= c("abbreviation_canton_and_fl" = "Kanton")) %>%
+  group_by(date, Grossregion_Name)%>%
+  summarize(
+    ncumul_conf = sum(ncumul_conf, na.rm = FALSE),
+    ncumul_deceased = sum(ncumul_deceased, na.rm = FALSE)
+  ) %>%
+  ungroup() %>%
+  group_by(Grossregion_Name) %>%
   mutate(
-  ncumul_conf = ifelse(is.na(ncumul_conf), 0, ncumul_conf),
-  ncumul_deceased = ifelse(is.na(ncumul_deceased), 0 , ncumul_deceased),
-  sarscov2_faelle = ifelse(date == "2020-02-27"	, ncumul_conf,  ncumul_conf - lag(ncumul_conf, n = 1)),
-  sarscov2_verstorbene = ifelse(date == "2020-02-27"	, ncumul_deceased,  ncumul_deceased - lag(ncumul_deceased, n = 1))
-  ) %>%
-  pivot_longer(
-  cols = c(sarscov2_faelle, sarscov2_verstorbene),
-  names_to = "variable_short",
-  values_to = "value"
-  ) %>%
-  mutate(
-      variable_long = case_when(
-      variable_short == "sarscov2_faelle" ~  "Gemeldete Anzahl von bestätigten SARS-CoV-2 Fällen",
-      variable_short == "sarscov2_verstorbene" ~  "Gemeldete Anzahl von bestätigten SARS-CoV-2 Verstorbene ",
-      TRUE ~ "???"),
-    topic = "Gesundheit",
-    location = "ZH",
-    unit= "Anzahl",
-    source = "Gesundheitsdirektion Kanton Zürich",
-    update = "täglich",
-    public = "ja",
-    description = "	https://github.com/statistikZH/covid19moitoring_health_covid19cases"
-  ) %>%
-  select(-ncumul_conf, -ncumul_deceased) %>%
-  select(date, value, topic, variable_short, variable_long, location, unit, source, update, public, description) 
-														
-```
+    ncumul_conf = ifelse(is.na(ncumul_conf), 0, ncumul_conf),
+    ncumul_deceased = ifelse(is.na(ncumul_deceased), 0 , ncumul_deceased),
+    sarscov2_faelle = ifelse(date == min(date)	, ncumul_conf,  ncumul_conf - lag(ncumul_conf, n = 1)),
+    sarscov2_verstorbene = ifelse(date == min(date)	, ncumul_deceased,  ncumul_deceased - lag(ncumul_deceased, n = 1))
+  ) 
 
-# export result
+cases_sel<-reshape2::melt(cases_sel, id.vars=c("date", "Grossregion_Name"))
+covid19<-data.frame(date=as.POSIXct(paste(cases_sel$date, "00:00:00", sep=" ")),
+                       value=cases_sel$value,
+                       topic="Gesundheit",
+                       variable_short=cases_sel$variable,
+                       variable_long=ifelse(cases_sel$variable=="ncumul_conf", 
+                                            "Gemeldete Anzahl SARS-CoV-2 Fällen", 
+                                            "Gemeldete Anzahl SARS-CoV-2 Verstorbenen"),
+                       location=cases_sel$Grossregion_Name,
+                       unit="Anzahl",
+                       source="Gesundheitsdirektion Kanton Zürich",
+                       update="täglich",
+                       public="ja",
+                       description="https://github.com/statistikZH/covid19monitoring_health_covid19cases")
 
-```{r}
-
-write.table(cases_sel, "./Health_covid19cases.csv", sep=",", fileEncoding="UTF-8", row.names = F)
-
+write.table(covid19, "Health_covid19cases.csv", sep=",", fileEncoding="UTF-8", row.names = F)
 
 ```
 
 # auffälligkeiten
-
-sarscov2_verstorbene: <br>
--1 am 17.03.2020  <br>
-0 am 18.03.2020  <br>
+- Es gibt einige Minuswerte
