@@ -70,7 +70,7 @@ covid19<-data.frame(date=as.POSIXct(paste(allreg$date, "00:00:00", sep=" ")),
                        variable_long=allreg$variable_long,
                        location=allreg$location,
                        unit="Anzahl",
-                       source="Gesundheitsdirektion Kanton Zürich",
+                       source="Kantone, STAT",
                        update="täglich",
                        public="ja",
                        description="https://github.com/statistikZH/covid19monitoring_health_covid19cases")
