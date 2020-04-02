@@ -75,7 +75,7 @@ covid19<-data.frame(date=as.POSIXct(paste(allreg$date, "00:00:00", sep=" ")),
                        public="ja",
                        description="https://github.com/statistikZH/covid19monitoring_health_covid19cases")
 
-#letzte zwei tage rausnehmen zu sicherheit, um keine unvollständig erfassten Tage drin zu haben
+#letzten =tage rausnehmen zu sicherheit, um keinen unvollständig erfassten Tag drin zu haben
 covid19<-subset(covid19, date<Sys.Date()-1)
 
 write.table(covid19, "Health_covid19cases.csv", sep=",", fileEncoding="UTF-8", row.names = F)
