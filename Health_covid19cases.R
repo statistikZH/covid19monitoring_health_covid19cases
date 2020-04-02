@@ -77,6 +77,9 @@ covid19<-data.frame(date=as.POSIXct(paste(allreg$date, "00:00:00", sep=" ")),
 
 #letzten =tage rausnehmen zu sicherheit, um keinen unvollständig erfassten Tag drin zu haben
 covid19<-subset(covid19, date<Sys.Date()-1)
+# nur schweiz
+covid19<-subset(covid19, location%in%c("CH", "Espace Mittelland", "Genferseeregion", "Nordwestschweiz", "Ostschweiz", "TI", "Zentralschweiz", "ZH"))
+
 
 write.table(covid19, "Health_covid19cases.csv", sep=",", fileEncoding="UTF-8", row.names = F)
 
