@@ -32,7 +32,7 @@ conf<-apply(conf,2, diff)
 conf<-melt(as.matrix(conf))
 # variables
 conf$variable_short<-"faelle_sars_cov2"
-conf$variable_long<-"Gemeldete Anzahl SARS-CoV-2 Fälle"
+conf$variable_long<-"neu gemeldete Anzahl SARS-CoV-2 Fälle"
 
 #dead cases by canton
 dead<-with(cases, tapply(ncumul_deceased, list(date, abbreviation_canton_and_fl), sum))
@@ -46,7 +46,7 @@ dead<-apply(dead,2, diff)
 #long format
 dead<-melt(as.matrix(dead))
 dead$variable_short<-"verstorbene_sars_cov2"
-dead$variable_long<-"Gemeldete Anzahl SARS-CoV-2 Verstorbene"
+dead$variable_long<-"neu gemeldete Anzahl SARS-CoV-2 Verstorbene"
 
 all<-rbind(conf, dead)
 
