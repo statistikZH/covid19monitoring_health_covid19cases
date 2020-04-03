@@ -83,4 +83,5 @@ covid19<-subset(covid19, location%in%c("CH", "Espace Mittelland", "Genferseeregi
 
 write.table(covid19, "Health_covid19cases.csv", sep=",", fileEncoding="UTF-8", row.names = F)
 
+range(covid19$date)
 
