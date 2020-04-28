@@ -11,9 +11,7 @@ library(lattice)
 
 
 # Number formatting
-options(scipen = 1000000)
-options(digits = 6)
-options(encoding="UTF-8")
+
 #Einlesen Fälle
 url_cases  <- "https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total.csv"
 cases <- read.csv(url(url_cases), header=T, sep=",", stringsAsFactors=FALSE, encoding="UTF-8")
