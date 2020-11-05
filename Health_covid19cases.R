@@ -1,16 +1,6 @@
 #title: "Health_covid19cases"
-
-# Import libraries
-library(dplyr) # Version: ‘0.8.5’
-library(tidyr) # ‘1.0.2’
-library(lubridate) # ‘1.7.4’
 library(reshape2)
 library(xts)
-library(lattice)
-#library(hochr)
-
-
-# Number formatting
 
 #Einlesen Fälle
 url_cases  <- "https://raw.githubusercontent.com/openZH/covid_19/master/COVID19_Fallzahlen_CH_total.csv"
@@ -61,7 +51,7 @@ allreg<-with(all, aggregate(value, list(date=Var1,
 #Beides zusammen
 allreg<-rbind(allreg, chtotal)
 
-covid19<-data.frame(date=as.POSIXct(paste(allreg$date, "00:00:00", sep=" ")),
+covid19<-data.frame(date=as.Date(allreg$date),
                        value=allreg$x,
                        topic="Gesundheit",
                        variable_short=allreg$variable_short,
